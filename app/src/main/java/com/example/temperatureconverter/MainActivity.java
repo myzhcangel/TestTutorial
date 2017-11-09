@@ -1,6 +1,8 @@
 package com.example.temperatureconverter;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -30,20 +32,31 @@ public class MainActivity extends Activity {
                             Toast.LENGTH_LONG).show();
                     return;
                 }
-
                 float inputValue = Float.parseFloat(text.getText().toString());
+                Intent intent;
                 if (celsiusButton.isChecked()) {
-                    text.setText(String
-                            .valueOf(ConverterUtil.convertFahrenheitToCelsius(inputValue)));
-                    celsiusButton.setChecked(false);
-                    fahrenheitButton.setChecked(true);
+                    intent = createIntent(MainActivity.this, String
+                            .valueOf(ConverterUtil.convertFahrenheitToCelsius(inputValue)), text
+                            .getText().toString(), 1);
                 } else {
-                    text.setText(String
-                            .valueOf(ConverterUtil.convertCelsiusToFahrenheit(inputValue)));
-                    fahrenheitButton.setChecked(false);
-                    celsiusButton.setChecked(true);
+                    intent = createIntent(MainActivity.this, text
+                            .getText().toString(), String
+                            .valueOf(ConverterUtil.convertCelsiusToFahrenheit(inputValue)), 0);
                 }
+                startActivity(intent);
                 break;
         }
+    }
+
+    public static Intent createIntent(Context context, String celsius, String fahrenheit, int flag) {
+        String result;
+        if(flag == 1) {
+            result = fahrenheit + "F is " + celsius + "C";
+        } else {
+            result = celsius + "C is " + fahrenheit + "F";
+        }
+        Intent intent = new Intent(context, Display.class);
+        intent.putExtra("result", result);
+        return intent;
     }
 }
